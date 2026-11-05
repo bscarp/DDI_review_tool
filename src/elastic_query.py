@@ -31,7 +31,7 @@ def search_document(query, index=ES_INDEX_DOC_MAME, size=10):
 
 
 def search_chunk(document_name, keyword_list, index=ES_INDEX_CHUNK_MAME, source=True):
-    body = {"bool": {"must": [{"match": {"filepath.keyword": {"query": document_name}}}]}}
+    body = {"bool": {"must": [{"match": {"filepath": {"query": document_name}}}]}}
     term_query = {"bool": {"should": []}}
     for keyword in keyword_list:
         term_query["bool"]["should"].append({"match": {"text": {"query": keyword}}})
@@ -40,7 +40,7 @@ def search_chunk(document_name, keyword_list, index=ES_INDEX_CHUNK_MAME, source=
 
 
 def is_document_indexed(windows_path, index=ES_INDEX_CHUNK_MAME):
-    query = {"match":{"filepath.keyword": windows_path}}
+    query = {"match":{"filepath": {"query": windows_path}}}
     result = es.search(query=query, index=index, source=False)
     return len(result["hits"]["hits"]) > 0
 
