@@ -13,12 +13,13 @@ import docx2txt
 # import module
 import traceback
 from elastic_query import is_document_indexed
-from settings import ES_HOST, ES_PORT, ES_CERT_PATH, ES_USER, ES_PWD, DRIVE_PATH, ES_INDEX_CHUNK_MAME, ES_INDEX_DOC_MAME, ES_SCHEME, DRIVE_DIR_NAME
+from settings import ES_HOST, ES_PORT, ES_CERT_PATH, ES_USER, ES_PWD, DRIVE_PATH, ES_INDEX_CHUNK_MAME, ES_INDEX_DOC_MAME, ES_SCHEME, DRIVE_DIR_NAME, ES_PATH_PREFIX
 
 # es = Elasticsearch(ES_HOST + ":" + ES_PORT, ca_certs=ES_CERT_PATH,
 #                    basic_auth=(ES_USER, ES_PWD))
 
-es = Elasticsearch([f'{ES_SCHEME}://{ES_USER}:{ES_PWD}@{ES_HOST}:{ES_PORT}'])
+es = Elasticsearch(f"{ES_SCHEME}://{ES_HOST}:{ES_PORT}{ES_PATH_PREFIX}",
+                    basic_auth=(ES_USER, ES_PWD))
 
 
 class TextFileExtractor:

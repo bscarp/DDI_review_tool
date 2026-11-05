@@ -2,12 +2,13 @@ import json
 
 from elasticsearch import Elasticsearch
 from elasticsearch import ApiError
-from settings import ES_HOST, ES_PORT, ES_CERT_PATH, ES_USER, ES_PWD, ES_INDEX_DOC_MAME, ES_INDEX_CHUNK_MAME, DRIVE_PATH, ES_SCHEME
+from settings import ES_HOST, ES_PORT, ES_USER, ES_PWD, ES_INDEX_DOC_MAME, ES_INDEX_CHUNK_MAME, DRIVE_PATH, ES_SCHEME, ES_PATH_PREFIX
 
 # es = Elasticsearch(ES_HOST+":"+ES_PORT, ca_certs=ES_CERT_PATH,
 #                    basic_auth=(ES_USER, ES_PWD))
 
-es = Elasticsearch([f'{ES_SCHEME}://{ES_USER}:{ES_PWD}@{ES_HOST}:{ES_PORT}'])
+es = Elasticsearch(f"{ES_SCHEME}://{ES_HOST}:{ES_PORT}{ES_PATH_PREFIX}",
+                    basic_auth=(ES_USER, ES_PWD))
 
 
 def search_document(query, index=ES_INDEX_DOC_MAME, size=10):

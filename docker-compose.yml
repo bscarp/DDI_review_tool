@@ -16,16 +16,17 @@ services:
       restart: unless-stopped
       # logging:
       #    driver: journald
-   elasticsearch_ddi:
-      image : docker.elastic.co/elasticsearch/elasticsearch:8.5.0
-      container_name : elasticsearch_ddi
-      ports :
-         - 9800:9800
-      volumes :
-         - ./elasticsearch-8.5.0/data:/usr/share/elasticsearch/data
-         - ./elasticsearch-8.5.0/config:/usr/share/elasticsearch/config
-      restart: unless-stopped
-      # logging:
-      #    driver: journald
+   zincsearch:
+     image: public.ecr.aws/zinclabs/zincsearch:latest
+     container_name: zincsearch
+     environment:
+       ZINC_DATA_PATH: /data
+       ZINC_FIRST_ADMIN_USER: admin
+       ZINC_FIRST_ADMIN_PASSWORD: "Complexpass#123"
+     volumes:
+       - ./Zincsearch/data:/data
+     ports:
+       - "9800:9800"
+     restart: unless-stopped
 
 
