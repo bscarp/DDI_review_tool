@@ -41,9 +41,11 @@ def search_chunk(document_name, keyword_list, index=ES_INDEX_CHUNK_MAME, source=
 
 def is_document_indexed(windows_path, index=ES_INDEX_CHUNK_MAME):
     query = {"match":{"filepath": {"query": windows_path}}}
-    result = es.search(query=query, index=index, source=False)
-    return len(result["hits"]["hits"]) > 0
-
+    result = es.search(query=query, index=index, source=["filepath"], size=100)
+    return any(
+        hit["_source"].get("filepath") == windows_path
+        for hit in result["hits"]["hits"]
+    )
 
 def get_document(index, id):
     url = f"{ES_SCHEME}://{ES_HOST}:{ES_PORT}/api/{index}/_doc/{id}"
