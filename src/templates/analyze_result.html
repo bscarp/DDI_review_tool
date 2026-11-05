@@ -494,26 +494,37 @@
                 return await fetch("{{ prefix }}/chunk/" + chunkID).then((response) => response.json());
             }
 
-            function setTextPreview(file, cursor) {
-                getChunk(result[file][cursor]).then(data => {
-                    if (data["_id"] != "undefined") {
-                        //$("#text-chunk-preview").html(highlight_text(data["text"].toLowerCase(), keywordList));
-                        $("#text-chunk-preview").html(data["text"]).mark(keywordList, {"accuracy":"complementary"})
-                        currentText = data["text"];
-                        currentPage = data["page"] + 1
+function setTextPreview(file, cursor) {
+    getChunk(result[file][cursor]).then(data => {
+        if (data && data["text"] !== undefined) {
 
-                        $("#span-current-page").html(`This block is on page ${data["page"] + 1} of this document:`)
-                        if (currentFile.endsWith(".pdf")) {
-                            //'<iframe id="embed-pdf" src="/file?path=' + encodeURIComponent(currentFile) + '&embed=True#page=' + '(data["page"] + 1)" type="application/pdf"  height="100%" width="100%"></iframe>'
-                            $(".div-iframe").html('<iframe class="embed-pdf border border-2" id="embed-pdf" src="{{ prefix }}/file?path=' + encodeURIComponent(currentFile) + '&embed=True#page=' + (data["page"] + 1) + '" type="application/pdf"  height="100%" width="100%"></iframe>')
-                            //$("#embed-pdf").prop("src", "/file?path=" + encodeURIComponent(currentFile) + "&embed=True#page=" + (data["page"] + 1));
-                        } else {
-                            $(".embed-pdf").attr("src", "");
-                        }
-                    }
+            $("#text-chunk-preview")
+                .html(data["text"])
+                .mark(keywordList, {"accuracy": "complementary"});
 
-                });
+            currentText = data["text"];
+            currentPage = data["page"] + 1;
+
+            $("#span-current-page").html(
+                `This block is on page ${data["page"] + 1} of this document:`
+            );
+
+            if (currentFile.endsWith(".pdf")) {
+                $(".div-iframe").html(
+                    '<iframe class="embed-pdf border border-2" ' +
+                    'id="embed-pdf" src="{{ prefix }}/file?path=' +
+                    encodeURIComponent(currentFile) +
+                    '&embed=True#page=' +
+                    (data["page"] + 1) +
+                    '" type="application/pdf" ' +
+                    'height="100%" width="100%"></iframe>'
+                );
+            } else {
+                $(".embed-pdf").attr("src", "");
             }
+        }
+    });
+}
 
             function setMatchSummary(file, cursor, totalMatch){
                 const index = fileList.indexOf(currentFile);

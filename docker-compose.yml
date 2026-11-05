@@ -24,9 +24,11 @@ services:
        ZINC_FIRST_ADMIN_USER: admin
        ZINC_FIRST_ADMIN_PASSWORD: "Complexpass#123"
      volumes:
-       - ./zincsearch/data:/data
+       - data:/data
      ports:
-       - "9800:9800"
+       - "4080:4080"
      restart: unless-stopped
 
+volumes:
+   data:
 

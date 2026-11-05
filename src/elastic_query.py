@@ -1,4 +1,7 @@
 import json
+import urllib.request
+import urllib.error
+import base64
 
 from elasticsearch import Elasticsearch
 from elasticsearch import ApiError
@@ -43,10 +46,33 @@ def is_document_indexed(windows_path, index=ES_INDEX_CHUNK_MAME):
 
 
 def get_document(index, id):
+    url = f"{ES_SCHEME}://{ES_HOST}:{ES_PORT}/api/{index}/_doc/{id}"
+
+    credentials = f"{ES_USER}:{ES_PWD}"
+    encoded_credentials = base64.b64encode(
+        credentials.encode("utf-8")
+    ).decode("utf-8")
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Basic {encoded_credentials}"
+        }
+    )
+
     try:
-        return es.get(index=index, id=id)["_source"]
-    except ApiError as ex:
-        return ex.info, ex.status_code
+        with urllib.request.urlopen(request, timeout=10) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return result["_source"]
+
+    except urllib.error.HTTPError as ex:
+        if ex.code == 404:
+            return {"error": "Document not found"}, 404
+
+        return {"error": ex.read().decode("utf-8")}, ex.code
+
+    except urllib.error.URLError as ex:
+        return {"error": str(ex.reason)}, 500
 
 
 """"

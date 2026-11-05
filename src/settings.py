@@ -5,7 +5,7 @@ if "/app/src" in os.getcwd():
     ES_HOST = "zincsearch"
 else:
     ES_HOST = "localhost"
-ES_PORT = "9800"
+ES_PORT = "4080"
 ES_SCHEME = "http"
 ES_PATH_PREFIX = "/es"
 ES_CERT_PATH = "certs/http_ca.crt"
